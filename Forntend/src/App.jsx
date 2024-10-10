@@ -28,7 +28,7 @@ function App() {
   const [deliveryZone, setDeliveryZone] = useState({
     lat: "",
     lng: "",
-    radius: 3000,
+    radius: 0,
   });
 
   // Define icons for stores
@@ -192,7 +192,14 @@ function App() {
                   position={[store.lat, store.lng]}
                   icon={icon}
                   eventHandlers={{
-                    click: () => handleStoreCheck(store.id),
+                    click: () => {
+                      setDeliveryZone({
+                        lat: store.lat,
+                        lng: store.lng,
+                        radius: store.radius,
+                      });
+                      setActiveStoreId(store.id); // Set active store ID on click
+                    },
                   }}
                 >
                   <Popup>
@@ -206,10 +213,10 @@ function App() {
                     >
                       ดูเส้นทาง
                     </a>
-                    {activeStoreId === store.id && (
+                    {activeStoreId === store.id && store.radius > 0 && (
                       <Circle
                         center={[store.lat, store.lng]}
-                        radius={store.raduis}
+                        radius={store.radius}
                         pathOptions={{
                           color: "green",
                           fillColor: "green",
