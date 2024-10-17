@@ -4,7 +4,7 @@ const db = require("../Models");
 const UserStore = db.User;
 
 // Verify token
-const verifyToken = (req, res, next) => {
+verifyToken = (req, res, next) => {
   let token = req.headers["x-access-token"];
 
   if (!token) {
@@ -19,10 +19,11 @@ const verifyToken = (req, res, next) => {
         message: "Unauthorized!",
       });
     }
-    req.userId = decoded.id;
+    req.userId = decoded.id; // ดึง userId จาก token
     next();
   });
 };
+
 
 // Check if user is admin
 const isAdmin = async (req, res, next) => {

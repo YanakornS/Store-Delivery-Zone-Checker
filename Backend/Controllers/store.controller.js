@@ -13,6 +13,9 @@ exports.create = (req, res) => {
     });
   }
 
+  // Get userId from authenticated user (token)
+  const userId = req.userId; // ดึง userId จาก token ที่ middleware verifyToken ได้ตรวจสอบแล้ว
+
   // Check if store already exists
   Store.findOne({ where: { storeName } })
     .then((existingStore) => {
@@ -29,6 +32,7 @@ exports.create = (req, res) => {
         latitude,
         longitude,
         deliveryRadius,
+        userId, // ใช้ userId จาก token
       };
 
       return Store.create(newStore);
@@ -81,7 +85,6 @@ exports.getById = (req, res) => {
 // Update a store by ID
 exports.update = (req, res) => {
   const id = req.params.id;
-
   Store.update(req.body, {
     where: { id: id },
   })

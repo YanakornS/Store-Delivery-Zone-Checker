@@ -8,6 +8,14 @@ const store = sequelize.define("store", {
     primaryKey: true,
     autoIncrement: true,
   },
+  userId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: "userstores", // 'Movies' would also work
+      key: "id",
+    },
+    allowNull: false,
+  },
   storeName: {
     type: DataTypes.STRING,
     allowNull: false,

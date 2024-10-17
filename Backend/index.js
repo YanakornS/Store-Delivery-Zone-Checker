@@ -5,10 +5,16 @@ const app = express();
 const authRouter = require("./routers/auth.router");
 const StoreRouter = require("./routers/store.router");
 
-const db = require("./Models/db");
+const db = require("./Models");
 const role = db.Role;
 
 require("dotenv").config();
+
+//Dev model
+// db.sequelize.sync({ force: true }).then(() => {
+//   initRole();
+//   console.log("Drop and Sync DB");
+// });
 
 // ใช้ environment variable
 const frontend_url = process.env.FRONTEND_URL || "http://localhost:5173";
@@ -17,12 +23,6 @@ const frontend_url = process.env.FRONTEND_URL || "http://localhost:5173";
 const corsOptions = {
   origin: frontend_url, // อนุญาตเฉพาะ origin ของ frontend
 };
-
-// Dev model
-// db.sequelize.sync({ force: true }).then(() => {
-//   initRole();
-//   console.log("Drop and Sync DB");
-// });
 
 const initRole = () => {
   role.create({ id: 1, name: "user" });

@@ -3,6 +3,11 @@ const sequelize = require("./db");
 
 // Define User Schema
 const UserStore = sequelize.define("userstore", {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
   username: {
     type: DataTypes.STRING,
     allowNull: false,

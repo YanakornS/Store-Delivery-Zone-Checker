@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const storeController = require("../Controllers/store.controller");
+const verifyToken = require("../middlewares/authJwt").verifyToken;
 const { authJwt } = require("../middlewares");
 
 //http://localhost:5000/api/v1/store
 
 //Create a restaurant
 
-router.post("/", storeController.create);
+router.post("/", verifyToken, storeController.create);
 
 //Get a restaurant
 
