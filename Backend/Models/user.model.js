@@ -16,17 +16,21 @@ const UserStore = sequelize.define("userstore", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   address: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  latitude: {
+  lat: {
     type: DataTypes.FLOAT,
-    allowNull: false,
+    allowNull: true,
   },
-  longitude: {
+  lng: {
     type: DataTypes.FLOAT,
-    allowNull: false,
+    allowNull: true,
   },
 });
 

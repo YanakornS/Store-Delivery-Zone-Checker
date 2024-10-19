@@ -8,8 +8,8 @@ const { Op } = require("sequelize");
 
 // Register a new Signup
 exports.signup = async (req, res) => {
-  const { username, password, address, latitude, longitude } = req.body; // เพิ่ม address, latitude, longitude
-  if (!username || !password || !address || !latitude || !longitude) {
+  const { username, password, email, address } = req.body; // เพิ่ม address, latitude, longitude
+  if (!username || !password  || !email || !address  ) {
     res.status(400).send({
       message: "Please provide all required fields",
     });
@@ -19,11 +19,9 @@ exports.signup = async (req, res) => {
   // Prepare Sign data
   const newUser = {
     username: username,
-
     password: bcrypt.hashSync(password, 6),
+    email: email,
     address: address, // เพิ่ม address
-    latitude: latitude, // เพิ่ม latitude
-    longitude: longitude, // เพิ่ม longitude
   };
 
   // Save User in the database
@@ -94,6 +92,7 @@ exports.signin = async (req, res) => {
         res.status(200).send({
           id: user.id,
           username: user.username,
+          email: user.email, 
           address: user.address, // เพิ่ม address
           latitude: user.latitude, // เพิ่ม latitude
           longitude: user.longitude, // เพิ่ม longitude

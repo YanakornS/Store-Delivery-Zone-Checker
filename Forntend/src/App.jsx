@@ -7,10 +7,10 @@ import {
   Circle,
   useMapEvents,
 } from "react-leaflet";
-import axios from "axios";
-import "./App.css";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
+import axios from "axios";
+import "./App.css";
 import Swal from "sweetalert2";
 
 // Import icons

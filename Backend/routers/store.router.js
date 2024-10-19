@@ -19,13 +19,9 @@ router.get("/", storeController.getAll);
 router.get("/:id", storeController.getById);
 
 //Update a restaurant
-router.put("/:id", storeController.update);
+router.put("/:id", verifyToken, storeController.update);
 
 //Delete a restaurant
-router.delete(
-  "/:id",
-  [authJwt.verifyToken, authJwt.isAdmin],
-  storeController.delete
-);
+router.delete("/:id", verifyToken, storeController.delete); 
 
 module.exports = router;

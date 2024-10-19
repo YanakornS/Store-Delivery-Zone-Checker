@@ -8,7 +8,7 @@ const store = sequelize.define("store", {
     primaryKey: true,
     autoIncrement: true,
   },
-  userId: {
+  adminId: {
     type: DataTypes.INTEGER,
     references: {
       model: "userstores", // 'Movies' would also work
@@ -24,11 +24,11 @@ const store = sequelize.define("store", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  latitude: {
+  lat: {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
-  longitude: {
+  lng: {
     type: DataTypes.FLOAT,
     allowNull: false,
   },

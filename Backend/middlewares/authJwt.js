@@ -19,7 +19,7 @@ verifyToken = (req, res, next) => {
         message: "Unauthorized!",
       });
     }
-    req.userId = decoded.id; // ดึง userId จาก token
+    req.adminId = decoded.id; // ดึง userId จาก token
     next();
   });
 };
@@ -28,7 +28,7 @@ verifyToken = (req, res, next) => {
 // Check if user is admin
 const isAdmin = async (req, res, next) => {
   try {
-    const user = await UserStore.findByPk(req.userId);
+    const user = await UserStore.findByPk(req.adminId);
     if (!user) return res.status(404).send({ message: "User not found" });
 
     const roles = await user.getRoles();

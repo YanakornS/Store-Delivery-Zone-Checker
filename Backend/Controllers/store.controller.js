@@ -3,18 +3,18 @@ const { where } = require("sequelize");
 
 // Create and Save a new store
 exports.create = (req, res) => {
-  const { storeName, address, latitude, longitude, deliveryRadius } = req.body;
-
+  const { storeName, address, lat, lng, deliveryRadius } = req.body;
+  const adminId = req.adminId; // ดึง userId จาก token ที่ middleware verifyToken ได้ตรวจสอบแล้ว
   // Validate request
-  if (!storeName || !address || !latitude || !longitude || !deliveryRadius) {
+  if (!storeName || !address || !lat || !lng || !deliveryRadius) {
     return res.status(400).send({
       message:
-        "All fields (storeName, address, latitude, longitude, deliveryRadius) are required!",
+        "All fields (storeName, address, lat, lng, deliveryRadius) are required!",
     });
   }
 
   // Get userId from authenticated user (token)
-  const userId = req.userId; // ดึง userId จาก token ที่ middleware verifyToken ได้ตรวจสอบแล้ว
+  
 
   // Check if store already exists
   Store.findOne({ where: { storeName } })
@@ -24,15 +24,14 @@ exports.create = (req, res) => {
           message: "Store already exists!",
         });
       }
-
       // Create a store if it doesn't exist
       const newStore = {
         storeName,
         address,
-        latitude,
-        longitude,
+        lat,
+        lng,
         deliveryRadius,
-        userId, // ใช้ userId จาก token
+        adminId, // ใช้ userId จาก token
       };
 
       return Store.create(newStore);
@@ -82,19 +81,32 @@ exports.getById = (req, res) => {
     });
 };
 
+
 // Update a store by ID
 exports.update = (req, res) => {
   const id = req.params.id;
-  Store.update(req.body, {
-    where: { id: id },
-  })
+  const adminId = req.adminId; // ดึง userId จาก token
+
+  // ค้นหาว่าร้านที่ต้องการแก้ไขเป็นของผู้ใช้ที่ล็อกอินอยู่หรือไม่
+  Store.findOne({ where: { id: id, adminId: adminId } })
+    .then((store) => {
+      if (!store) {
+        return res.status(404).send({
+          message: `Store not found or you don't have permission to update this store.`,
+        });
+      }
+
+      // Update ร้านค้าด้วยข้อมูลที่ส่งมา
+      return Store.update(req.body, { where: { id: id } });
+    })
     .then((updated) => {
       if (updated[0] === 1) {
         return Store.findByPk(id);
+      } else {
+        res.status(404).send({
+          message: `Store not found with id ${id}`,
+        });
       }
-      res.status(404).send({
-        message: `Store not found with id ${id}`,
-      });
     })
     .then((updatedStore) => {
       if (updatedStore) {
@@ -111,9 +123,10 @@ exports.update = (req, res) => {
 // Delete a store by ID
 exports.delete = (req, res) => {
   const id = req.params.id;
+  const adminId = req.adminId;
 
   Store.destroy({
-    where: { id: id },
+    where: { id: id, adminId: adminId},
   })
     .then((deleted) => {
       if (deleted) {
