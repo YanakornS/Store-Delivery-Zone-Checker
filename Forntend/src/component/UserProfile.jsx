@@ -41,7 +41,11 @@ const UserProfile = () => {
               className="flex items-center justify-between text-[#007BFF] hover:bg-[#F0F4FF] px-4 py-2 rounded-md"
             >
               Profile
-              <img src="https://cdn-icons-png.flaticon.com/512/1946/1946083.png"alt="Profiles Icon" className="w-5 h-5" />
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/1946/1946083.png"
+                alt="Profiles Icon"
+                className="w-5 h-5"
+              />
             </Link>
           </li>
 
@@ -51,7 +55,11 @@ const UserProfile = () => {
               onClick={handleLogout}
             >
               Logout
-              <img src="" alt="Logout Icon" className="w-5 h-5" />
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/1574/1574351.png"
+                alt="Logout Icon"
+                className="w-5 h-5"
+              />
             </a>
           </li>
         </ul>

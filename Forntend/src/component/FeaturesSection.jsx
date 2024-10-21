@@ -13,13 +13,15 @@ const FeaturesSection = () => {
               alt="การจัดการหาร้านค้าใกล้เคียง"
               className="w-full h-48 object-cover mb-4"
             />
-            <h3 className="text-xl font-bold">การหาร้านค้าที่ใกล้เคียงอย่างง่ายดาย</h3>
+            <h3 className="text-xl font-bold">
+              การหาร้านค้าที่ใกล้เคียงอย่างง่ายดาย
+            </h3>
             <p>ติดตามและจัดการสินค้าคุณแบบเรียลไทม์</p>
           </div>
           {/* Feature Item 2 */}
           <div className="feature-item p-4 w-full sm:w-1/2 lg:w-1/3">
             <img
-              src="https://www.sapogo.com/Upload/FileImage/2021/3/1500a66ef9eeab1c38768a0aa89aeee7.jpg"
+              src="https://w7.pngwing.com/pngs/325/555/png-transparent-performance-metric-business-evaluation-strategy-management-sales-tracking-text-measurement-logo.png"
               alt="การติดตามการขาย"
               className="w-full h-48 object-cover mb-4"
             />

@@ -12,6 +12,7 @@ import AdminPage from "../pages/AdminPage";
 import ProtectRegister from "../pages/ProtectRegister";
 import NotAllowed from "../pages/NotAllowed";
 import ModOrAdminPage from "../pages/ModOrAdminPage";
+import UserProfile from "../pages/UserProfile";
 
 
 const router = createBrowserRouter([
@@ -36,21 +37,40 @@ const router = createBrowserRouter([
         element: <Login />,
       },
       {
-        path: "register", 
-        element: <ProtectRegister> <Register /> </ProtectRegister> ,
+        path: "register",
+        element: (
+          <ProtectRegister>
+            {" "}
+            <Register />{" "}
+          </ProtectRegister>
+        ),
       },
       {
-        path: "addStore", 
-        element: <AdminPage> <AddStore /> </AdminPage> ,
+        path: "addStore",
+        element: (
+          <AdminPage>
+            {" "}
+            <AddStore />{" "}
+          </AdminPage>
+        ),
       },
       {
-        path: "edit/:id", 
-        element: <ModOrAdminPage> <EditStore /> </ModOrAdminPage> ,
+        path: "edit/:id",
+        element: (
+          <ModOrAdminPage>
+            {" "}
+            <EditStore />{" "}
+          </ModOrAdminPage>
+        ),
       },
       {
-        path:"/notAllowed",
+        path: "/notAllowed",
         element: <NotAllowed />,
-      }
+      },
+      {
+        path: "/UserProfile",
+        element:<UserProfile />
+      },
     ],
   },
 ]);
