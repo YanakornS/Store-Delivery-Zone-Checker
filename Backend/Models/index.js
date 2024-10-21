@@ -22,7 +22,7 @@ db.Role.belongsToMany(db.UserStore, {
 });
 
  //One-to-Many : User-Role
-db.UserStore.hasMany(db.Store, { foreignKey: "adminId" });
-db.Store.belongsTo(db.UserStore, { foreignKey: "adminId" });
+db.UserStore.hasMany(db.Store, { foreignKey: "userId" });
+db.Store.belongsTo(db.UserStore, { foreignKey: "userId" });
 
 module.exports = db;

@@ -1,94 +1,81 @@
 const jwt = require("jsonwebtoken");
 const config = require("../Config/auth.config");
 const db = require("../Models");
-const UserStore = db.User;
+const UserStore = db.UserStore;
+const User = db.User;
 
-// Verify token
+
+
+//Verify Token
 verifyToken = (req, res, next) => {
   let token = req.headers["x-access-token"];
 
   if (!token) {
-    return res.status(403).send({
-      message: "No token provided!",
-    });
+    return res.status(403).send({ message: "No token provided!" });
   }
-
   jwt.verify(token, config.secret, (err, decoded) => {
     if (err) {
-      return res.status(401).send({
-        message: "Unauthorized!",
-      });
+      return res.status(401).send({ message: "Unauthorized!" });
     }
-    req.adminId = decoded.id; // ดึง userId จาก token
+    req.userId = decoded.id; //jwt.sign
     next();
   });
 };
 
 
-// Check if user is admin
-const isAdmin = async (req, res, next) => {
-  try {
-    const user = await UserStore.findByPk(req.adminId);
-    if (!user) return res.status(404).send({ message: "User not found" });
 
-    const roles = await user.getRoles();
-    const isAdmin = roles.some((role) => role.name === "admin");
-
-    if (isAdmin) {
-      next();
-    } else {
-      return res
-        .status(403)
-        .send({ message: "Unauthorized, Require Admin Role!" });
-    }
-  } catch (err) {
-    return res.status(500).send({ message: "Internal server error" });
-  }
+//isAdmin?
+isAdmin = (req, res, next) => {
+  UserStore.findByPk(req.userId).then((user) => {
+    user.getRoles().then((roles) => {
+      for (let i = 0; i < roles.length; i++) {
+        if (roles[i].name === "admin") {
+          next();
+          return;
+        }
+      }
+      res.status(401).send({ message: "Require Admin Role!" });
+      return;
+    });
+  });
 };
 
-// Check if user is moderator
-const isMod = async (req, res, next) => {
-  try {
-    const user = await UserStore.findByPk(req.userId);
-    if (!user) return res.status(404).send({ message: "User not found" });
-
-    const roles = await user.getRoles();
-    const isMod = roles.some((role) => role.name === "moderator");
-
-    if (isMod) {
-      next();
-    } else {
-      return res
-        .status(403)
-        .send({ message: "Unauthorized, Require Moderator Role!" });
-    }
-  } catch (err) {
-    return res.status(500).send({ message: "Internal server error" });
-  }
+//isMod?
+isMod = (req, res, next) => {
+  UserStore.findByPk(req.userId).then((user) => {
+    user.getRoles().then((roles) => {
+      for (let i = 0; i < roles.length; i++) {
+        if (roles[i].name === "moderator") {
+          next();
+          return;
+        }
+      }
+      res.status(401).send({ message: "Require Moderator Role!" });
+      return;
+    });
+  });
 };
 
-// Check if user is either admin or moderator
-const isModOrAdmin = async (req, res, next) => {
-  try {
-    const user = await UserStore.findByPk(req.userId);
-    if (!user) return res.status(404).send({ message: "User not found" });
-
-    const roles = await user.getRoles();
-    const isModOrAdmin = roles.some(
-      (role) => role.name === "moderator" || role.name === "admin"
-    );
-
-    if (isModOrAdmin) {
-      next();
-    } else {
-      return res
-        .status(403)
-        .send({ message: "Unauthorized, Require Moderator Or Admin Role!" });
-    }
-  } catch (err) {
-    return res.status(500).send({ message: "Internal server error" });
-  }
+///isModOrAdmin
+isModOrAdmin = (req, res, next) => {
+  UserStore.findByPk(req.userId).then((user) => {
+    user.getRoles().then((roles) => {
+      for (let i = 0; i < roles.length; i++) {
+        if (roles[i].name === "admin" || roles[i].name === "moderator") {
+          next();
+          return;
+        }
+      }
+      res.status(401).send({ message: "Require Admin or Moderator Role!" });
+      return;
+    });
+  });
 };
+
+
+
+
+
 
 const authJwt = {
   verifyToken,

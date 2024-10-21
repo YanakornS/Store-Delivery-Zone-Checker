@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import AuthService from "../services/Store.services"; // เปลี่ยนให้ตรงกับบริการ API ของคุณ
+import axios from "axios"; // เพิ่ม axios
+const GEO_KEY = import.meta.env.VITE_GEOAPIMAP_KEY;
+
+
 
 const AddStore = () => {
   const [store, setStore] = useState({
@@ -41,6 +45,60 @@ const AddStore = () => {
         text: error.response?.data?.message || "Error adding store",
         icon: "error",
       });
+    }
+  };
+
+// const handleGeocode = async () => {
+//   try {
+//     const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json`, {
+//       params: {
+//         address: store.address,
+//         key: GEO_KEY, // ตรวจสอบว่า APIGEO_KEY ถูกเรียกใช้อย่างถูกต้อง
+//       },
+//     });
+
+//     console.log("Geocode API response:", response.data);
+
+//     if (response.data.status === 'OK') {
+//       const location = response.data.results[0].geometry.location;
+//       Swal.fire({
+//         icon: "success",
+//         title: "ค้นหาพิกัดสำเร็จ",
+//         text: `ละติจูด: ${location.lat}, ลองจิจูด: ${location.lng}`,
+//         showConfirmButton: false,
+//         timer: 1500,
+//       });
+//       setStore((prevStore) => ({
+//         ...prevStore,
+//         lat: location.lat,
+//         lng: location.lng,
+//       }));
+//     } else {
+//       console.log("ผิดพลาดการค้นหาพิกัด:", response.data.status); 
+//     }
+//   } catch (error) {
+//     console.error('Error fetching geocode:', error);
+//     Swal.fire("Error", "เกิดข้อผิดพลาดในการค้นหาพิกัด", "error");
+//   }
+// };
+
+  
+  
+  const handleGetCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setStore((prevStore) => ({
+          ...prevStore,
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        }));
+        Swal.fire("Success", "Current location retrieved!", "success");
+      }, (error) => {
+        console.error("Error getting location:", error);
+        Swal.fire("Error", "Could not get current location.", "error");
+      });
+    } else {
+      Swal.fire("Error", "Geolocation is not supported by this browser.", "error");
     }
   };
 
@@ -86,8 +144,7 @@ const AddStore = () => {
                 placeholder="Enter latitude"
                 name="lat"
                 value={store.lat}
-                onChange={handleChange}
-                required
+                readOnly // ไม่ให้ผู้ใช้กรอก
               />
             </label>
 
@@ -99,8 +156,7 @@ const AddStore = () => {
                 placeholder="Enter longitude"
                 name="lng"
                 value={store.lng}
-                onChange={handleChange}
-                required
+                readOnly // ไม่ให้ผู้ใช้กรอก
               />
             </label>
 
@@ -130,6 +186,13 @@ const AddStore = () => {
                 onClick={() => navigate("/Home")}
               >
                 Cancel
+              </button>
+              <button
+                type="button"
+                className="btn bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+                onClick={handleGetCurrentLocation}
+              >
+                Get Current Location
               </button>
             </div>
           </form>

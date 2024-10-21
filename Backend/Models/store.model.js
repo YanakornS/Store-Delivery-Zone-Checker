@@ -8,7 +8,7 @@ const store = sequelize.define("store", {
     primaryKey: true,
     autoIncrement: true,
   },
-  adminId: {
+  userId: {
     type: DataTypes.INTEGER,
     references: {
       model: "userstores", // 'Movies' would also work

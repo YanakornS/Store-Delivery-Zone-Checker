@@ -1,10 +1,12 @@
 const Store = require("../Models/store.model");
+const { Op } = require("sequelize");
 const { where } = require("sequelize");
 
 // Create and Save a new store
 exports.create = (req, res) => {
   const { storeName, address, lat, lng, deliveryRadius } = req.body;
-  const adminId = req.adminId; // ดึง userId จาก token ที่ middleware verifyToken ได้ตรวจสอบแล้ว
+  const userId = req.userId; // ดึง userId จาก token ที่ middleware verifyToken ได้ตรวจสอบแล้ว
+
   // Validate request
   if (!storeName || !address || !lat || !lng || !deliveryRadius) {
     return res.status(400).send({
@@ -31,7 +33,7 @@ exports.create = (req, res) => {
         lat,
         lng,
         deliveryRadius,
-        adminId, // ใช้ userId จาก token
+        userId, // ใช้ userId จาก token
       };
 
       return Store.create(newStore);
@@ -82,51 +84,62 @@ exports.getById = (req, res) => {
 };
 
 
+
 // Update a store by ID
-exports.update = (req, res) => {
-  const id = req.params.id;
-  const adminId = req.adminId; // ดึง userId จาก token
+exports.update = async (req, res) => {
+  const id = req.params.id;  // ดึง storeId จาก URL
+ 
 
-  // ค้นหาว่าร้านที่ต้องการแก้ไขเป็นของผู้ใช้ที่ล็อกอินอยู่หรือไม่
-  Store.findOne({ where: { id: id, adminId: adminId } })
-    .then((store) => {
-      if (!store) {
-        return res.status(404).send({
-          message: `Store not found or you don't have permission to update this store.`,
-        });
-      }
 
-      // Update ร้านค้าด้วยข้อมูลที่ส่งมา
-      return Store.update(req.body, { where: { id: id } });
-    })
-    .then((updated) => {
-      if (updated[0] === 1) {
-        return Store.findByPk(id);
-      } else {
-        res.status(404).send({
-          message: `Store not found with id ${id}`,
-        });
-      }
-    })
-    .then((updatedStore) => {
-      if (updatedStore) {
-        res.send(updatedStore);
-      }
-    })
-    .catch((error) => {
-      res.status(500).send({
-        message: error.message || `Error updating store with id ${id}`,
+  try {
+    // ค้นหาว่าร้านที่ต้องการแก้ไขเป็นของผู้ใช้ที่ล็อกอินอยู่หรือไม่
+    const store = await Store.findOne({ where: { id: id} });
+    if (!store) {
+      return res.status(404).send({
+        message: `Store not found or you don't have permission to update this store.`,
       });
+    }
+
+    // ตรวจสอบว่ามีชื่อร้านที่ซ้ำกับร้านอื่นหรือไม่ (ไม่รวมร้านปัจจุบัน)
+    const storeWithSameName = await Store.findOne({
+      where: {
+        storeName: req.body.storeName,
+        id: { [Op.ne]: id }, // เช็คชื่อร้านที่ไม่ใช่ร้านนี้
+      },
     });
+
+    if (storeWithSameName) {
+      return res.status(400).send({
+        message: "Store name already exists. Please choose a different name.",
+      });
+    }
+
+    // อัปเดตร้านค้าด้วยข้อมูลที่ส่งมา
+    const updated = await Store.update(req.body, { where: { id: id } });
+
+    if (updated[0] === 1) {
+      const updatedStore = await Store.findByPk(id);
+      res.send(updatedStore); // ส่งข้อมูลร้านที่อัปเดตแล้วกลับไป
+    } else {
+      res.status(404).send({
+        message: `Store not found with id ${id}`,
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: error.message || `Error updating store with id ${id}`,
+    });
+  }
 };
+
 
 // Delete a store by ID
 exports.delete = (req, res) => {
   const id = req.params.id;
-  const adminId = req.adminId;
+  const userId = req.userId;
 
   Store.destroy({
-    where: { id: id, adminId: adminId},
+    where: { id: id, userId: userId, },
   })
     .then((deleted) => {
       if (deleted) {

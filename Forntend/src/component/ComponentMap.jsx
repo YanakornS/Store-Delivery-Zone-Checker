@@ -1,4 +1,3 @@
-// ComponentMap.jsx
 import { useState, useEffect } from "react";
 import {
   MapContainer,
@@ -10,11 +9,13 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
-import axios from "axios";
 import Swal from "sweetalert2";
 import Tokenservice from "../services/token.services"; // ปรับเส้นทางให้ตรงกับที่คุณเก็บ Tokenservice
-import api from "../services/api"
+import api from "../services/api";
 import StoreService from "../services/Store.services";
+import { useAuthContext } from "../Contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 // Import icons
 import Home from "../assets/Home.png";
 import Seven from "../assets/stores.png"; // Replace with your actual path
@@ -33,6 +34,8 @@ const ComponentMap = () => {
     lng: "",
     deliveryRadius: 0,
   });
+  const { user } = useAuthContext();
+  const navigate = useNavigate();
 
   // Define icons for stores
   const inDeliveryZoneIcon = new Icon({
@@ -68,8 +71,8 @@ const ComponentMap = () => {
   useEffect(() => {
     const fetchStores = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/v1/store`);
-        setStores(response.data);
+        const data = await StoreService.getAllStores();
+        setStores(data);
       } catch (error) {
         console.error("Error fetching store data:", error);
       }
@@ -121,7 +124,7 @@ const ComponentMap = () => {
       Swal.fire({
         title: "Success!",
         text: `Your location is within the delivery zone for ${
-          store.name
+          store.storeName
         }. Distance: ${distance.toFixed(2)} meters.`,
         icon: "success",
         confirmButtonText: "OK",
@@ -156,45 +159,95 @@ const ComponentMap = () => {
     }
   };
 
- const handleDeleteStore = async (storeId) => {
-  const accessToken = Tokenservice.getLocalAccessToken();
-  console.log("Access Token:", accessToken); // ตรวจสอบว่ามี access token หรือไม่
-
-  if (!accessToken) {
-    console.error("No access token found");
-    return;
-  }
-
-  try {
-    const response = await api.delete(`${STORE_API}/${storeId}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (response.status === 200) {
-      console.log("Store deleted successfully");
-      // คุณอาจต้องเรียกใช้ฟังก์ชันเพื่อรีเฟรชข้อมูลร้านค้าหลังจากลบ
+  const handleDeleteStore = async (storeId) => {
+    const accessToken = Tokenservice.getLocalAccessToken();
+    console.log("Access Token:", accessToken); // ตรวจสอบว่ามี access token หรือไม่
+    if (!accessToken) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No access token found",
+      });
+      return;
     }
-  } catch (error) {
-    console.error("Error deleting store:", error);
-  }
-};
+    // แสดง SweetAlert เพื่อให้ผู้ใช้ยืนยันการลบ
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await api.delete(`${STORE_API}/${storeId}`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
 
- return (
+          if (response.status === 200) {
+            Swal.fire(
+              "Deleted!",
+              "The store has been deleted.",
+              "success"
+            ).then(() => {
+              // รีเฟรชหน้าเมื่อผู้ใช้กดปิด SweetAlert
+              window.location.reload();
+            });
+          }
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Error deleting store: " + error.message,
+          });
+        }
+      }
+    });
+  };
+  const handleEditStore = (id) => {
+    navigate(`/edit/${id}`); // navigate to the edit page with the specified id
+  };
+
+  return (
     <>
-      {/* ปุ่มต่างๆ */}
-      <button onClick={handleGetLocation} className="btn btn-primary mb-4">
-        Get My Location
-      </button>
-      <button onClick={handleLocationCheck} className="btn btn-primary mb-4 ">
-        Check Delivery Availability
-      </button>
+      <div
+        className="button-container "
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "1rem",
+        }}
+      >
+        <button
+          onClick={handleGetLocation}
+          className="btn btn-primary mx-2 transition duration-300 ease-in-out hover:bg-blue-700 hover:scale-105"
+          style={{
+            background: "linear-gradient(to right, #3b82f6, #60a5fa)", // ไล่สีจากฟ้าเข้มไปฟ้าสว่าง
+            border: "none",
+          }}
+        >
+          Get My Location
+        </button>
+        <button
+          onClick={handleLocationCheck}
+          className="btn btn-primary mx-2 transition duration-300 ease-in-out hover:bg-blue-700 hover:scale-105"
+          style={{
+            background: "linear-gradient(to right, #3b82f6, #60a5fa)", // ไล่สีจากฟ้าเข้มไปฟ้าสว่าง
+            border: "none",
+          }}
+        >
+          Check Delivery Availability
+        </button>
+      </div>
       <div className="mapContainer w-full max-w-4xl">
         <MapContainer
           center={center}
           zoom={13}
-          style={{ height: "75vh", width: "100vw" }}
+          style={{ height: "75vh", width: "99vw" }}
           scrollWheelZoom={false}
         >
           <TileLayer
@@ -242,30 +295,60 @@ const ComponentMap = () => {
                   </a>
                   <br />
                   {/* ปุ่มแก้ไข */}
-                  <button
-                    onClick={() => handleEditStore(store.id)}
-                    className="btn btn-warning mt-2"
-                  >
-                    Edit Store
-                  </button>
-                  {/* ปุ่มลบ */}
-                  <button
-                    onClick={() => handleDeleteStore(store.id)}
-                    className="btn btn-danger mt-2"
-                  >
-                    Delete Store
-                  </button>
-                  {activeStoreId === store.id && store.deliveryRadius > 0 && (
-                    <Circle
-                      center={[store.lat, store.lng]}
-                      radius={store.deliveryRadius}
-                      pathOptions={{
-                        color: "green",
-                        fillColor: "green",
-                        fillOpacity: 0.2,
-                      }}
-                    />
-                  )}
+                  {/* ปุ่มแก้ไข */}
+                  <div>
+                    {user &&
+                   
+                      (user.roles.includes("ROLES_MODERATOR") ||
+                        user.roles.includes("ROLES_ADMIN") || user.roles.includes("ROLES_USER"))  && (
+                        <div className="card-actions justify-center flex flex-col items-center">
+                          <div className="text-center">
+                            <h2 className="text-xs font-semibold mb-1">
+                              {store.name}
+                            </h2>{" "}
+                            {/* ขนาดเล็กลง */}
+                            <div className="flex gap-1">
+                              {" "}
+                              {/* ระยะห่างระหว่างปุ่ม */}
+                              {/* เงื่อนไขสำหรับปุ่ม Delete (เฉพาะ ROLES_ADMIN เท่านั้น) */}
+                              {user.roles.includes("ROLES_ADMIN") && (
+                                <button
+                                  onClick={() => handleDeleteStore(store.id)}
+                                  className="btn btn-error btn-sm" // ขนาดปุ่มเล็ก
+                                >
+                                  Delete
+                                </button>
+                              )}
+                              {/* เงื่อนไขสำหรับปุ่ม Edit (เฉพาะ ROLES_MODERATOR และ ROLES_ADMIN) */}
+                              {(user.roles.includes("ROLES_MODERATOR") ||
+                                user.roles.includes("ROLES_ADMIN")) && (
+                                <button
+                                  onClick={() => handleEditStore(store.id)}
+                                  className="btn btn-primary btn-sm" // ขนาดปุ่มเล็ก
+                                >
+                                  Edit
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                                
+                          {/* เงื่อนไขแสดงวงกลมแสดงขอบเขตการจัดส่ง */}
+                          {activeStoreId === store.id &&
+                            store.deliveryRadius > 0 && (
+                              <Circle
+                                center={[store.lat, store.lng]}
+                                radius={store.deliveryRadius}
+                                pathOptions={{
+                                  color: "green",
+                                  fillColor: "green",
+                                  fillOpacity: 0.2,
+                                }}
+                              />
+                            )}
+                        </div>
+                        
+                      )}
+                  </div>
                 </Popup>
               </Marker>
             );

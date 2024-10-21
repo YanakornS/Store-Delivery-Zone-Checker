@@ -13,7 +13,7 @@ router.use((req, res, next) => {
   );
   next();
 });
-router.post("/signup", authController.signup);
+router.post("/signup",[verifySingUp.checkDuplicateUsernameOrEmail, verifySingUp.checkRolesExisted], authController.signup);
 
 //Chack a signin
 router.post("/signin", authController.signin);

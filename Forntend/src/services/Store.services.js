@@ -29,7 +29,7 @@ const createStore = async (storeData) => {
 // ดึงร้านค้าด้วย ID
 const getStoreById = async (storeId) => {
   try {
-    const response = await api.get(`${STORE_API}${storeId}`);
+    const response = await api.get(`${STORE_API}/${storeId}`);
     return response.data; // Return the data from the response
   } catch (error) {
     console.error(`Failed to get store with id ${storeId}:`, error);
@@ -40,24 +40,28 @@ const getStoreById = async (storeId) => {
 // อัปเดตร้านค้าด้วย ID
 const updateStore = async (storeId, storeData) => {
   try {
-    const response = await api.put(`${STORE_API}${storeId}`, storeData);
-    return response.data; // Return the updated data from the response
+    const response = await api.put(`${STORE_API}/${storeId}`, storeData);
+    return response.data;
   } catch (error) {
     console.error(`Failed to update store with id ${storeId}:`, error);
     throw error; // Re-throw the error so it can be handled elsewhere
   }
 };
 
+
+
 // ลบร้านค้าด้วย ID
 const deleteStore = async (storeId) => {
   try {
-    const response = await api.delete(`${STORE_API}${storeId}`);
+    const response = await api.delete(`${STORE_API}/${storeId}`);
     return response.data; // Return the result from the response
   } catch (error) {
     console.error(`Failed to delete store with id ${storeId}:`, error);
-    throw error; // Re-throw the error so it can be handled elsewhere
+    throw error; // Re-throw the error for handling elsewhere
   }
 };
+
+
 
 // Export ฟังก์ชันทั้งหมดใน StoreService
 const StoreService = {

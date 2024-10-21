@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Header from "./Header";
 import RegisterButton from "./RegisterButton";
 import LoginButton from "./LoginButton";
 import UserProfile from "./UserProfile";
 import { useAuthContext } from "../Contexts/AuthContext";
 
-
 function Navbar() {
   const { user } = useAuthContext();
 
-
-  
   const menus = {
     ROLES_ADMIN: [
       { name: "AddStore", link: "/AddStore" },
@@ -28,13 +25,14 @@ function Navbar() {
 
   return (
     <>
-      <div className="navbar bg-[#9DBDFF] text-white shadow-lg px-4 py-2 fixed w-full top-3 left-0 z-50">
-        <div className="navbar-start">
+      <div className="navbar bg-gradient-to-r from-[#A8D5A4] to-[#87B985] text-white shadow-lg px-6 py-3 fixed w-full top-0 left-0 z-50 rounded-b-lg">
+        <div className="navbar-start flex items-center">
+          {/* Dropdown ทางซ้ายสุด */}
           <div className="dropdown">
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-ghost btn-circle text-white hover:bg-[#8AB1F7]"
+              className="btn btn-ghost btn-circle text-white hover:bg-[#6A9E69] rounded-full shadow-md"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -53,7 +51,7 @@ function Navbar() {
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content bg-[#9DBDFF] rounded-box z-[1] mt-3 w-52 p-2 shadow-lg"
+              className="menu menu-sm dropdown-content bg-[#A8D5A4] rounded-lg shadow-lg mt-3 w-52 p-2"
             >
               {user &&
                 menus[user.roles[0]].map((menuItem) => (
@@ -65,6 +63,11 @@ function Navbar() {
                 ))}
             </ul>
           </div>
+          
+          {/* โลโก้ถัดจาก Dropdown */}
+          <a href="/" className="flex items-center ml-4">
+            <img src={"https://cdn-icons-png.flaticon.com/512/11624/11624428.png"} alt="Logo" className="h-12 mr-2" /> {/* ขนาดโลโก้ */}
+          </a>
         </div>
         <div className="navbar-center">
           <a href="/Home" className="text-2xl font-bold">

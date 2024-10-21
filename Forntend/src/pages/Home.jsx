@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <div>
       
-    <Navbar/>
+    {/* <Navbar/> */}
       <div className="mt-24"></div>
       <ComponentMap />
     </div>
