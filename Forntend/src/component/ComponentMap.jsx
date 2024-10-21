@@ -374,7 +374,7 @@ const ComponentMap = () => {
         </MapContainer>
       </div>
     </>
-  );
+  );  
 };
 
 export default ComponentMap;
