@@ -17,7 +17,7 @@ import { useAuthContext } from "../Contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 // Import icons
-import Home from "../assets/Home.png";
+import House from "../assets/house.png";
 import Seven from "../assets/stores.png"; // Replace with your actual path
 import Seven2 from "../assets/stores2.png"; // Replace with your actual path
 
@@ -298,9 +298,9 @@ const ComponentMap = () => {
                   {/* ปุ่มแก้ไข */}
                   <div>
                     {user &&
-                   
                       (user.roles.includes("ROLES_MODERATOR") ||
-                        user.roles.includes("ROLES_ADMIN") || user.roles.includes("ROLES_USER"))  && (
+                        user.roles.includes("ROLES_ADMIN") ||
+                        user.roles.includes("ROLES_USER")) && (
                         <div className="card-actions justify-center flex flex-col items-center">
                           <div className="text-center">
                             <h2 className="text-xs font-semibold mb-1">
@@ -331,7 +331,7 @@ const ComponentMap = () => {
                               )}
                             </div>
                           </div>
-                                
+
                           {/* เงื่อนไขแสดงวงกลมแสดงขอบเขตการจัดส่ง */}
                           {activeStoreId === store.id &&
                             store.deliveryRadius > 0 && (
@@ -346,7 +346,6 @@ const ComponentMap = () => {
                               />
                             )}
                         </div>
-                        
                       )}
                   </div>
                 </Popup>
@@ -360,7 +359,7 @@ const ComponentMap = () => {
                 position={[myLocation.lat, myLocation.lng]}
                 icon={
                   new Icon({
-                    iconUrl: Home,
+                    iconUrl: House,
                     iconSize: [35, 35],
                   })
                 }
