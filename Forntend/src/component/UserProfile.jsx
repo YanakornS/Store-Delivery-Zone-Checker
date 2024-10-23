@@ -25,7 +25,7 @@ const UserProfile = () => {
           <div className="w-10 h-10 rounded-full overflow-hidden">
             <img
               alt="User Avatar"
-              src="https://cdn-icons-png.freepik.com/512/7718/7718888.png"
+              src="https://cdn-icons-png.flaticon.com/512/8323/8323209.png"
             />
           </div>
           {/* Green Dot */}

@@ -11,7 +11,7 @@ const UserProfile = () => {
           <div className="relative mr-4">
             <img
               className="w-16 h-16 rounded-full border-2 border-gray-300"
-              src="https://cdn-icons-png.freepik.com/512/7718/7718888.png"
+              src="https://cdn-icons-png.flaticon.com/512/8323/8323209.png"
               alt="User Profile"
             />
             {/* Green Dot */}

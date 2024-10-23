@@ -13,14 +13,7 @@ function Navbar() {
       { name: "AddStore", link: "/AddStore" },
       { name: "Home", link: "/home" },
     ],
-    ROLES_USER: [
-      { name: "Home", link: "/home" },
-      { name: "AddHotel", link: "/AddHotel" },
-    ],
-    ROLES_MODERATOR: [
-      { name: "Add restaurant", link: "/addMenu" },
-      { name: "Search", link: "/search" },
-    ],
+    ROLES_USER: [{ name: "Home", link: "/home" }],
   };
 
   return (
@@ -63,10 +56,15 @@ function Navbar() {
                 ))}
             </ul>
           </div>
-          
+
           {/* โลโก้ถัดจาก Dropdown */}
           <a href="/" className="flex items-center ml-4">
-            <img src={"https://cdn-icons-png.flaticon.com/512/11624/11624428.png"} alt="Logo" className="h-12 mr-2" /> {/* ขนาดโลโก้ */}
+            <img
+              src={"https://cdn-icons-png.flaticon.com/512/11624/11624428.png"}
+              alt="Logo"
+              className="h-12 mr-2"
+            />{" "}
+            {/* ขนาดโลโก้ */}
           </a>
         </div>
         <div className="navbar-center">
@@ -76,7 +74,7 @@ function Navbar() {
         </div>
         <div className="navbar-end flex items-center space-x-4">
           {user ? (
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 border border-gray-300 rounded-lg p-1">
               <span>
                 Welcome, <span className="font-semibold">{user.username}</span>
               </span>

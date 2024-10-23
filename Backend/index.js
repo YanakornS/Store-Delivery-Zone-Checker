@@ -26,8 +26,7 @@ const corsOptions = {
 
 const initRole = () => {
   role.create({ id: 1, name: "user" });
-  role.create({ id: 2, name: "moderator" });
-  role.create({ id: 3, name: "admin" });
+  role.create({ id: 2, name: "admin" });
 };
 
 //use middleware

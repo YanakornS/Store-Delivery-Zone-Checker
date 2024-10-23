@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+import { StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client'
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -7,6 +7,8 @@ import './index.css'
 import { RouterProvider } from 'react-router-dom';
 import { AuthProvider } from './Contexts/AuthContext.jsx';
 import router from './Routers/Router.jsx';
+import SuspenseContent from './component/SuspenseContent.jsx';
+
 
 
 // Use createRoot from react-dom/client
@@ -14,8 +16,10 @@ const root = createRoot(document.getElementById('root'));
 
 root.render(
   <StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
+   <Suspense fallback={<SuspenseContent />}>
+  <AuthProvider>
+    <RouterProvider router={router} />
+  </AuthProvider>
+</Suspense>
   </StrictMode>,
 );

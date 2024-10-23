@@ -61,7 +61,7 @@ const Register = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-[#E8F7E9] to-[#C2EBC3]">
       <div className="card bg-white shadow-xl rounded-lg w-full max-w-md p-6">
         <div className="card-body">
           <h1 className="text-4xl font-bold text-center mb-6 text-gray-800">

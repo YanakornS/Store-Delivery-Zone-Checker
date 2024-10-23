@@ -18,8 +18,10 @@ import { useNavigate } from "react-router-dom";
 
 // Import icons
 import House from "../assets/house.png";
-import Seven from "../assets/stores.png"; // Replace with your actual path
-import Seven2 from "../assets/stores2.png"; // Replace with your actual path
+import Seven from "../assets/stores.png"; 
+import Seven2 from "../assets/stores2.png"; 
+import deliverycheck from "../assets/deliverycheck.png"; 
+
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const STORE_API = import.meta.env.VITE_Store_API;
@@ -230,8 +232,14 @@ const ComponentMap = () => {
             border: "none",
           }}
         >
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/8343/8343678.png"
+            alt="Location Icon"
+            className="w-7 h-7 inline-block mr-2" // กำหนดขนาดและระยะห่างจากข้อความ
+          />
           Get My Location
         </button>
+
         <button
           onClick={handleLocationCheck}
           className="btn btn-primary mx-2 transition duration-300 ease-in-out hover:bg-blue-700 hover:scale-105"
@@ -240,13 +248,18 @@ const ComponentMap = () => {
             border: "none",
           }}
         >
+          <img
+            src={deliverycheck}
+            alt="Check Icon"
+            className="w-9 h-9 inline-block mr-2" // กำหนดขนาดและระยะห่างจากข้อความ
+          />
           Check Delivery Availability
         </button>
       </div>
       <div className="mapContainer w-full max-w-4xl">
         <MapContainer
           center={center}
-          zoom={13}
+          zoom={14}
           style={{ height: "75vh", width: "99vw" }}
           scrollWheelZoom={false}
         >
@@ -287,7 +300,7 @@ const ComponentMap = () => {
                   {store.address} <br />
                   ระยะทาง: {distance.toFixed(2)} เมตร <br />
                   <a
-                    href={store.direction}
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -295,58 +308,48 @@ const ComponentMap = () => {
                   </a>
                   <br />
                   {/* ปุ่มแก้ไข */}
-                  {/* ปุ่มแก้ไข */}
                   <div>
                     {user &&
-                      (user.roles.includes("ROLES_MODERATOR") ||
-                        user.roles.includes("ROLES_ADMIN") ||
-                        user.roles.includes("ROLES_USER")) && (
+                      store.userId === user.id && ( // เช็คว่าเป็นเจ้าของร้านหรือไม่
                         <div className="card-actions justify-center flex flex-col items-center">
                           <div className="text-center">
                             <h2 className="text-xs font-semibold mb-1">
                               {store.name}
-                            </h2>{" "}
+                            </h2>
                             {/* ขนาดเล็กลง */}
                             <div className="flex gap-1">
                               {" "}
                               {/* ระยะห่างระหว่างปุ่ม */}
-                              {/* เงื่อนไขสำหรับปุ่ม Delete (เฉพาะ ROLES_ADMIN เท่านั้น) */}
-                              {user.roles.includes("ROLES_ADMIN") && (
-                                <button
-                                  onClick={() => handleDeleteStore(store.id)}
-                                  className="btn btn-error btn-sm" // ขนาดปุ่มเล็ก
-                                >
-                                  Delete
-                                </button>
-                              )}
-                              {/* เงื่อนไขสำหรับปุ่ม Edit (เฉพาะ ROLES_MODERATOR และ ROLES_ADMIN) */}
-                              {(user.roles.includes("ROLES_MODERATOR") ||
-                                user.roles.includes("ROLES_ADMIN")) && (
-                                <button
-                                  onClick={() => handleEditStore(store.id)}
-                                  className="btn btn-primary btn-sm" // ขนาดปุ่มเล็ก
-                                >
-                                  Edit
-                                </button>
-                              )}
+                              {/* เงื่อนไขสำหรับปุ่ม Delete (เฉพาะเจ้าของร้านเท่านั้น) */}
+                              <button
+                                onClick={() => handleDeleteStore(store.id)}
+                                className="btn btn-error  btn-sm" // ขนาดปุ่มเล็ก
+                              >
+                                Delete
+                              </button>
+                              {/* เงื่อนไขสำหรับปุ่ม Edit (เฉพาะเจ้าของร้านเท่านั้น) */}
+                              <button
+                                onClick={() => handleEditStore(store.id)}
+                                className="btn btn-warning  btn-sm" // ขนาดปุ่มเล็ก
+                              >
+                                Edit
+                              </button>
                             </div>
                           </div>
-
-                          {/* เงื่อนไขแสดงวงกลมแสดงขอบเขตการจัดส่ง */}
-                          {activeStoreId === store.id &&
-                            store.deliveryRadius > 0 && (
-                              <Circle
-                                center={[store.lat, store.lng]}
-                                radius={store.deliveryRadius}
-                                pathOptions={{
-                                  color: "green",
-                                  fillColor: "green",
-                                  fillOpacity: 0.2,
-                                }}
-                              />
-                            )}
                         </div>
                       )}
+                    {/* เงื่อนไขแสดงวงกลมแสดงขอบเขตการจัดส่ง (ทุกคนสามารถเห็นได้) */}
+                    {activeStoreId === store.id && store.deliveryRadius > 0 && (
+                      <Circle
+                        center={[store.lat, store.lng]}
+                        radius={store.deliveryRadius}
+                        pathOptions={{
+                          color: "green",
+                          fillColor: "green",
+                          fillOpacity: 0.2,
+                        }}
+                      />
+                    )}
                   </div>
                 </Popup>
               </Marker>
@@ -374,7 +377,7 @@ const ComponentMap = () => {
         </MapContainer>
       </div>
     </>
-  );  
+  );
 };
 
 export default ComponentMap;

@@ -88,12 +88,13 @@ exports.getById = (req, res) => {
 // Update a store by ID
 exports.update = async (req, res) => {
   const id = req.params.id;  // ดึง storeId จาก URL
+  const userId = req.userId;
  
 
 
   try {
     // ค้นหาว่าร้านที่ต้องการแก้ไขเป็นของผู้ใช้ที่ล็อกอินอยู่หรือไม่
-    const store = await Store.findOne({ where: { id: id} });
+    const store = await Store.findOne({ where: { id: id, userId: userId} });
     if (!store) {
       return res.status(404).send({
         message: `Store not found or you don't have permission to update this store.`,
