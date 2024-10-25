@@ -14,10 +14,7 @@ const NotAllowed = lazy(() => import("../pages/NotAllowed"));
 const ModOrAdminPage = lazy(() => import("../pages/ModOrAdminPage"));
 const UserProfile = lazy(() => import("../pages/UserProfile"));
 
-
-
-
-
+import CheckStoreAdmin from "../pages/CheckStoreAdmin";
 //import Login from "../pages/Login";
 // import Home from "../pages/Home";
 // import Register from "./../pages/Register";
@@ -31,7 +28,6 @@ const UserProfile = lazy(() => import("../pages/UserProfile"));
 // import NotAllowed from "../pages/NotAllowed";
 // import ModOrAdminPage from "../pages/ModOrAdminPage";
 // import UserProfile from "../pages/UserProfile";
-
 
 const router = createBrowserRouter([
   {
@@ -75,10 +71,11 @@ const router = createBrowserRouter([
       {
         path: "edit/:id",
         element: (
-          <ModOrAdminPage>
-            {" "}
-            <EditStore />{" "}
-          </ModOrAdminPage>
+          <AdminPage>
+            <CheckStoreAdmin>
+              <EditStore />
+            </CheckStoreAdmin>
+          </AdminPage>
         ),
       },
       {
@@ -87,7 +84,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/UserProfile",
-        element:<UserProfile />
+        element: <UserProfile />,
       },
     ],
   },

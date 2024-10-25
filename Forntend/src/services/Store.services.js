@@ -13,10 +13,10 @@ const createStore = async (storeData) => {
   }
 };
 
-
 // ดึงร้านค้าทั้งหมด
 
- const getAllStores = async () => { // Make sure to export it
+const getAllStores = async () => {
+  // Make sure to export it
   try {
     const response = await api.get(STORE_API);
     return response.data; // Return the data from the response
@@ -48,8 +48,6 @@ const updateStore = async (storeId, storeData) => {
   }
 };
 
-
-
 // ลบร้านค้าด้วย ID
 const deleteStore = async (storeId) => {
   try {
@@ -60,8 +58,6 @@ const deleteStore = async (storeId) => {
     throw error; // Re-throw the error for handling elsewhere
   }
 };
-
-
 
 // Export ฟังก์ชันทั้งหมดใน StoreService
 const StoreService = {

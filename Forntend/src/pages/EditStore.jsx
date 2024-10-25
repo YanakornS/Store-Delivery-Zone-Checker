@@ -20,13 +20,12 @@ const EditStore = () => {
       try {
         const data = await StoreService.getStoreById(id);
         setStore({
-          storeName: data.storeName || "",  // Ensure it falls back to empty string
+          storeName: data.storeName || "", // Ensure it falls back to empty string
           address: data.address || "",
           lat: data.lat || "",
           lng: data.lng || "",
           deliveryRadius: data.deliveryRadius || "",
         });
-        console.log("Fetched store data:", data);
       } catch (error) {
         console.error("Error fetching store:", error);
         // Keep the existing state
@@ -53,7 +52,8 @@ const EditStore = () => {
     if (store.address !== "") changes.push(`Address: ${store.address}`);
     if (store.lat !== "") changes.push(`Latitude: ${store.lat}`);
     if (store.lng !== "") changes.push(`Longitude: ${store.lng}`);
-    if (store.deliveryRadius !== "") changes.push(`Delivery Radius: ${store.deliveryRadius} m`);
+    if (store.deliveryRadius !== "")
+      changes.push(`Delivery Radius: ${store.deliveryRadius} m`);
 
     try {
       // Check if any changes were made before attempting to update
@@ -68,7 +68,9 @@ const EditStore = () => {
       }
 
       await StoreService.updateStore(id, store);
-      const changeMessage = `You have updated the following:\n- ${changes.join("\n- ")}`;
+      const changeMessage = `You have updated the following:\n- ${changes.join(
+        "\n- "
+      )}`;
       Swal.fire({
         title: "Success!",
         text: changeMessage,
@@ -81,7 +83,9 @@ const EditStore = () => {
       console.error("Error updating store:", error);
       Swal.fire({
         title: "Error!",
-         text: error.response?.data?.message || "There was an error updating the store.",
+        text:
+          error.response?.data?.message ||
+          "There was an error updating the store.",
         icon: "error",
         confirmButtonText: "OK",
       });

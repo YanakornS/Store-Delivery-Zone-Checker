@@ -3,6 +3,7 @@ import { useAuthContext } from "../Contexts/AuthContext";
 
 const AdminPage = ({ children }) => {
   const { user } = useAuthContext();
+  
   if (!user) {
     return <Navigate to="/login" />;
   }
